@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">  
+<suite name="APISuit">  
+  <test verbose="2" name="CommonAPITest">  
+     <!-- API接口测试 -->  
+    <classes>  
+      <class name="com.wafer.wtp.base.TestAPI"/> 
+    </classes>   
+  </test>  
+  
+</suite>  

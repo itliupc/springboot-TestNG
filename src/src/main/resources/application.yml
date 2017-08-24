@@ -1,0 +1,29 @@
+server :
+  port : 8005
+  context-path : /interfacetestdemo
+
+spring : 
+  datasource : 
+    url : jdbc:mysql://localhost:3306/interfacetestdemo
+    username : wafer
+    password : wafer
+    driver-class-name : com.mysql.jdbc.Driver
+    max-active : 20
+    max-idle : 0
+    min-idle : 0
+    max-wait : 10000
+    max-wait-millis : 31536000
+  jpa : 
+    database : MYSQL
+    show-sql : false
+    hibernate :
+      naming-strategy : org.hibernate.cfg.ImprovedNamingStrategy
+      dialect : org.hibernate.dialect.MySQL5Dialect
+
+token :
+  timeout : 3600 # token lose time (s)
+  header : Authorization
+  head : Bearer
+  expiration : 604800 
+  secret : cms@wafer.com
+        
