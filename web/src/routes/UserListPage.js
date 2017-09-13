@@ -9,10 +9,6 @@ import UserEditor from "../components/UserEditor";
 const UserListPage = ({ dispatch, userList, deptList, userInfo, intl, loading, visible, modalKey, handleType}) => {
   const columns = [
     {
-      title: intl.formatMessage({id: "user.userID"}),
-      dataIndex: 'userId'
-    },
-    {
       title: intl.formatMessage({id: "user.userName"}),
       dataIndex: 'userName'
     },
@@ -27,7 +23,7 @@ const UserListPage = ({ dispatch, userList, deptList, userInfo, intl, loading, v
     {
       title: intl.formatMessage({id: "user.lastAccess"}),
       dataIndex: 'latestLoginTime',
-      render: (text, record) => (moment(record.latestLoginTime).format("YYYY-MM-DD HH:mm:ss"))
+      render: (text, record) => record.latestLoginTime ? (moment(record.latestLoginTime).format("YYYY-MM-DD HH:mm:ss")) : ""
     },
     {
       title: intl.formatMessage({id: "user.operation"}),
@@ -87,7 +83,8 @@ const UserListPage = ({ dispatch, userList, deptList, userInfo, intl, loading, v
              visible={visible}
              footer={null}
              key={modalKey}
-             onCancel={closeHandle}>
+             onCancel={closeHandle}
+             maskClosable = {false}>
         <UserForm/>
       </Modal>
     </div>

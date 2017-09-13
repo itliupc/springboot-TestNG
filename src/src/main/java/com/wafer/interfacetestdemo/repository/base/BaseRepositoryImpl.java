@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
@@ -19,11 +20,11 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
 
   @Override
-  public void createQuery(String sql) {
+  public Query createQuery(String sql) {
     if (sql.contains("ps_")) {
-      em.createNativeQuery(sql);
+      return em.createNativeQuery(sql);
     } else {
-      em.createQuery(sql);
+      return em.createQuery(sql);
     }
   }
 
@@ -36,7 +37,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
       return em.createQuery(sql).getResultList();
     }
   }
-
+  
   @Override
   public Object queryBySql(String sql) {
     if (sql.contains("ps_")) {

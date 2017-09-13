@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.domain.Interface;
 import com.wafer.interfacetestdemo.domain.InterfaceTestCase;
 import com.wafer.interfacetestdemo.domain.Module;
@@ -32,7 +32,7 @@ import com.wafer.interfacetestdemo.vo.TestCaseView;
 
 @RestController
 @Transactional
-@RequestMapping(Constants.CONTROLLER_PATH)
+@RequestMapping(Constant.CONTROLLER_PATH)
 public class ModuleController {
 
   Logger logger = LoggerFactory.getLogger(ModuleController.class);
@@ -154,7 +154,7 @@ public class ModuleController {
     Module module = moduleService.findModuleById(mv.getModuleId());
     // 可以修改以下内容
     module.setModuleName(mv.getModuleName());
-    module.setIsRun(mv.isRun() ? Constants.RUNNING : Constants.NOT_RUNNING);
+    module.setIsRun(mv.isRun() ? Constant.RUNNING : Constant.NOT_RUNNING);
     module = moduleService.saveModule(module);
     return ResponseResult.success(ModuleView.transformViewToModule(module));
   }

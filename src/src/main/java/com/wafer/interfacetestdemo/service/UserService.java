@@ -50,4 +50,8 @@ public class UserService {
   public User getOtherUserbyEmail(String email, long userId) {
     return userRepository.getOtherUserbyEmail(email, userId);
   }
+
+  public User getOtherUserbyUserName(String userName, long userId) {
+    return userRepository.getOtherUserbyUserName(userName, userId);
+  }
 }

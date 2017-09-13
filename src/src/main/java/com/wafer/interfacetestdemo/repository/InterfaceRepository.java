@@ -9,6 +9,8 @@ public interface InterfaceRepository extends BaseRepository<Interface, Long> {
   
   List<Interface> findByModuleId(long moduleId);
   
+  List<Interface> findByModuleIdOrderByInterfaceIdDesc(long moduleId);
+  
   List<Interface> findByModuleIdIn(List<Long> moduleIds);
   
   List<Interface> findByModuleIdAndInterfaceNameLike(long moduleId, String interfaceName);

@@ -55,14 +55,21 @@ public class DeptController {
    */
   @RequestMapping(value = Constant.DEPT, method = RequestMethod.POST)
   public ResponseResult deptCreate(@RequestBody Dept dept) {
+    List<Dept> nameDepts = deptService.getDeptByDeptName(dept.getDeptName());
+    List<Dept> codeDepts = deptService.getDeptByDeptCode(dept.getDeptCode());
+    if (nameDepts.size() > 0) {
+      return ResponseResult.failure(Constant.DEPT_NAME_EXIST);
+    } else if (codeDepts.size() > 0) {
+      return ResponseResult.failure(Constant.DEPT_CODE_EXIST);
+    } else {
+      dept.setDeptType(0);
+      dept.setCreateTime(new Date());
 
-    dept.setDeptType(0);
-    dept.setCreateTime(new Date());
+      deptService.deptSave(dept);
 
-    deptService.deptSave(dept);
-
-    List<DeptVo> deptList = deptService.getDeptVoList();
-    return ResponseResult.success(deptList);
+      List<DeptVo> deptList = deptService.getDeptVoList();
+      return ResponseResult.success(deptList);
+    }
   }
 
   /**
@@ -96,19 +103,26 @@ public class DeptController {
   @RequestMapping(value = Constant.DEPT, method = RequestMethod.PUT)
   public ResponseResult deptModify(@RequestBody Dept dept) {
 
-    Dept deptOriginal = deptService.getDeptByDeptId(dept.getDeptId());
-
-    if (null != dept.getDeptName()) {
-      deptOriginal.setDeptName(dept.getDeptName());
+    List<Dept> nameDepts = deptService.getDeptByDeptNameExceptOne(dept.getDeptName(),
+        dept.getDeptId());
+    List<Dept> codeDepts = deptService.getDeptByDeptCodeExceptOne(dept.getDeptCode(),
+        dept.getDeptId());
+    if (nameDepts.size() > 0) {
+      return ResponseResult.failure(Constant.DEPT_NAME_EXIST);
+    } else if (codeDepts.size() > 0) {
+      return ResponseResult.failure(Constant.DEPT_CODE_EXIST);
+    } else {
+      Dept deptOriginal = deptService.getDeptByDeptId(dept.getDeptId());
+      if (null != dept.getDeptName()) {
+        deptOriginal.setDeptName(dept.getDeptName());
+      }
+      if (null != dept.getDeptCode()) {
+        deptOriginal.setDeptCode(dept.getDeptCode());
+      }
+      deptOriginal.setUpdateTime(new Date());
+      deptService.deptSave(deptOriginal);
+      List<DeptVo> deptList = deptService.getDeptVoList();
+      return ResponseResult.success(deptList);
     }
-    if (null != dept.getDeptCode()) {
-      deptOriginal.setDeptCode(dept.getDeptCode());
-    }
-
-    deptOriginal.setUpdateTime(new Date());
-    deptService.deptSave(deptOriginal);
-
-    List<DeptVo> deptList = deptService.getDeptVoList();
-    return ResponseResult.success(deptList);
   }
 }

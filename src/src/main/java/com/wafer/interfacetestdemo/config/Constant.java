@@ -31,6 +31,14 @@ public interface Constant {
   
   String PROJECT_DELETE = "project/{userId}/{projectId}";
   
+  String DATA_SERVICE = "dss/{projectId}";
+  
+  String DATA_SERVICE_TESTCASE = "dss/{projectId}/{moduleName}/{interfaceName}";
+  
+  
+  
+  
+  String APPLICATION_JSON = "json";
   
   /** 用户角色  admin */
   String USER_ROLE_ADMIN = "ADMIN";
@@ -38,12 +46,30 @@ public interface Constant {
   /** 用户角色  user */
   String USER_ROLE_USER = "USER";
   
+  /** 运行 */
+  int RUNNING = 0;
+  
+  /** 不运行 */
+  int NOT_RUNNING = 1;
+  
+  
+  
   String EMAIL_DUPLICATE = "100004";
+  
+  String USER_NAME_DUPLICATE = "100005";
   
   String USER_EXIST = "200001";
   
   String PROJECT_EXIST = "200002";
   
-  String APPLICATION_JSON = "json";
+  String DEPT_NAME_EXIST = "300001";
+  String DEPT_CODE_EXIST = "300002";
+  
+  /**
+   * 下载的文件类型
+   */
+  String DOWNLOAD_FILE_TYPE_EXCEL = "excel";
+  String DOWNLOAD_FILE_TYPE_JSON = "json";
+  
   
 }

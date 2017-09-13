@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.domain.InterfaceTestCase;
 import com.wafer.interfacetestdemo.repository.InterfaceTestCaseRepository;
 
@@ -54,6 +54,16 @@ public class InterfaceTestCaseService {
   public List<InterfaceTestCase> findInterfaceTestCaseByFace(long faceId) {
     return interfaceCaseRepository.findByInterfaceId(faceId);
   }
+  
+  /**
+   * 通过interfaceId 查询一个接口下的所有TestCase 默认排序
+   * 
+   * @param faceId
+   * @return
+   */
+  public List<InterfaceTestCase> findTestCaseByFaceOrderByCaseId(long faceId) {
+    return interfaceCaseRepository.findByInterfaceIdOrderByInterfaceTestCaseIdDesc(faceId);
+  }
 
   /**
    * 通过interfaceId 查询一个接口下的所有 run 或者 not run的TestCase
@@ -63,7 +73,7 @@ public class InterfaceTestCaseService {
    * @return
    */
   public List<InterfaceTestCase> findInterfaceTestCaseByFaceAndIsRun(long faceId, boolean isRun) {
-    int running = isRun ? Constants.RUNNING : Constants.NOT_RUNNING;
+    int running = isRun ? Constant.RUNNING : Constant.NOT_RUNNING;
     return interfaceCaseRepository.findByInterfaceIdAndIsRun(faceId, running);
   }
 }

@@ -59,6 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
               // 允许对于网站静态资源的无授权访问
               .antMatchers(
                       HttpMethod.GET,
+                      "/**/swagger-resources/**",
+                      "/**/api-docs/**",
+                      "/**/webjars/**",
                       "/**/static/**",
                       "/*.html",
                       "/favicon.ico",
@@ -70,6 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
               .antMatchers("**/socket/**").permitAll()
               // 对于获取token的rest api要允许匿名访问
               .antMatchers("/api/v1/login").permitAll()
+              .antMatchers("/api/v1/dataexport/**").permitAll()
+              .antMatchers("/api/v1/dss/**").permitAll()
               // .access("hasRole('ADMIN') and hasRole('DBA')")
               .antMatchers(HttpMethod.POST, "/api/v1/user").permitAll() // 注册用户
               .antMatchers("/api/v1/logout").permitAll()

@@ -12,7 +12,7 @@ import SettingMenu from '../SettingMenu.js';
 const Top = ({dispatch, userName}) => {
   return (
     <header className={style.header}>
-      <Link to="/"><FormattedMessage id="home.title"/></Link>
+      <FormattedMessage id="home.title"/>
       <SettingMenu
         dispatch={dispatch}
         userName={userName}

@@ -6,6 +6,7 @@ import {Link} from 'dva/router';
 import {FormattedMessage} from 'react-intl';
 import {USER_AUTHORITY_NORMAL, USER_AUTHORITY_ADMIN} from '../../utils/constants';
 import {Menu, Icon} from 'antd';
+import style from './left.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -15,7 +16,7 @@ const Left = ({userAuthority}) => {
   let subMenu = [];
   if (userAuthority === USER_AUTHORITY_ADMIN) {
     subMenu.push((
-      <SubMenu key="user" title={<span><Icon type="user"/><FormattedMessage id="home.userManager"/></span>}>
+      <SubMenu key="user" title={<span className={style.leftTextFont}><Icon type="user"/><FormattedMessage id="home.userManager"/></span>}>
         <MenuItem key="dept-list">
           <Link to="/dept/list"><FormattedMessage id="home.deptList"/></Link>
         </MenuItem>
@@ -26,7 +27,7 @@ const Left = ({userAuthority}) => {
     ));
   }
   subMenu.push((
-      <SubMenu key="project" title={<span><Icon type="team"/><FormattedMessage id="home.projectManager"/></span>}>
+      <SubMenu key="project" title={<span className={style.leftTextFont}><Icon type="team"/><FormattedMessage id="home.projectManager"/></span>}>
         <MenuItem key="project-list">
           <Link to="/project/list"><FormattedMessage id="home.projectList"/></Link>
         </MenuItem>

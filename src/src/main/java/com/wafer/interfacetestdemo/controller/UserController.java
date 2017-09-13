@@ -105,29 +105,32 @@ public class UserController {
    * @return 封装的user信息
    */
   @RequestMapping(value = Constant.USER, method = RequestMethod.POST)
-  public ResponseResult userCreate(@RequestBody UserVo userInfo){
-    
-    User userForCompare = userService.getUserbyEmail(userInfo.getEmail());
-    if(null != userForCompare){
+  public ResponseResult userCreate(@RequestBody UserVo userInfo) {
+    User userForCompareName = userService.findByUserName(userInfo.getUserName());
+    User userForCompareEmail = userService.getUserbyEmail(userInfo.getEmail());
+    if (null != userForCompareName) {
+      return ResponseResult.failure(Constant.USER_NAME_DUPLICATE);
+    } else if (null != userForCompareEmail) {
       return ResponseResult.failure(Constant.EMAIL_DUPLICATE);
+    } else {
+      User user = new User();
+      user.setEmail(userInfo.getEmail());
+      user.setUserName(userInfo.getUserName());
+      user.setCreateTime(new Date());
+      user.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
+      // 暂定设置所有的角色为user
+      user.setUserAuthority(1);
+      userService.userSave(user);
+
+      DeptUser deptUser = new DeptUser();
+      deptUser.setDeptId(userInfo.getDeptId());
+      deptUser.setUserId(user.getUserId());
+      deptUser.setCreateTime(new Date());
+      deptUserService.deptUserSave(deptUser);
+
+      List<UserVo> userList = userService.getUserVoList();
+      return ResponseResult.success(userList);
     }
-    User user = new User();
-    user.setEmail(userInfo.getEmail());
-    user.setUserName(userInfo.getUserName());
-    user.setCreateTime(new Date()); 
-    user.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
-    //暂定设置所有的角色为user
-    user.setUserAuthority(1);
-    userService.userSave(user); 
-    
-    DeptUser deptUser = new DeptUser();
-    deptUser.setDeptId(userInfo.getDeptId());
-    deptUser.setUserId(user.getUserId());
-    deptUser.setCreateTime(new Date());
-    deptUserService.deptUserSave(deptUser);
-    
-    List<UserVo> userList = userService.getUserVoList();
-    return ResponseResult.success(userList);
   }
   
   /**
@@ -152,38 +155,41 @@ public class UserController {
    * @return 封装的user信息
    */
   @RequestMapping(value = Constant.USER, method = RequestMethod.PUT)
-  public ResponseResult userModify(@RequestBody UserVo user){
-    
-    User userForCompare = userService.getOtherUserbyEmail(user.getEmail(), user.getUserId());
-    if(null != userForCompare){
+  public ResponseResult userModify(@RequestBody UserVo user) {
+    User userForCompareName =
+        userService.getOtherUserbyUserName(user.getUserName(), user.getUserId());
+    User userForCompareEmail = userService.getOtherUserbyEmail(user.getEmail(), user.getUserId());
+    if (null != userForCompareName) {
+      return ResponseResult.failure(Constant.USER_NAME_DUPLICATE);
+    } else if (null != userForCompareEmail) {
       return ResponseResult.failure(Constant.EMAIL_DUPLICATE);
+    } else {
+      User userInfo = userService.getUserbyUserId(user.getUserId());
+
+      if (null != user.getEmail()) {
+        userInfo.setEmail(user.getEmail());
+      }
+      if (null != user.getUserName()) {
+        userInfo.setUserName(user.getUserName());
+      }
+      userInfo.setUpdateTime(new Date());
+      userService.userSave(userInfo);
+
+      DeptUser deptUser = deptUserService.getDeptUserByUserId(user.getUserId());
+      if (null == deptUser) {
+        deptUser = new DeptUser();
+        deptUser.setDeptId(user.getDeptId());
+        deptUser.setUserId(user.getUserId());
+        deptUser.setCreateTime(new Date());
+        deptUserService.deptUserSave(deptUser);
+      } else if (deptUser.getDeptId() != user.getDeptId()) {
+        deptUser.setDeptId(user.getDeptId());
+        deptUserService.deptUserSave(deptUser);
+      }
+
+      List<UserVo> userList = userService.getUserVoList();
+      return ResponseResult.success(userList);
     }
-    
-    User userInfo = userService.getUserbyUserId(user.getUserId());
-    
-    if(null != user.getEmail()){
-      userInfo.setEmail(user.getEmail());
-    }
-    if(null != user.getUserName()){
-      userInfo.setUserName(user.getUserName());
-    }    
-    userInfo.setUpdateTime(new Date());
-    userService.userSave(userInfo);
-    
-    DeptUser deptUser = deptUserService.getDeptUserByUserId(user.getUserId());
-    if(null == deptUser){
-      deptUser = new DeptUser();
-      deptUser.setDeptId(user.getDeptId());
-      deptUser.setUserId(user.getUserId());
-      deptUser.setCreateTime(new Date());
-      deptUserService.deptUserSave(deptUser);
-    }else if(deptUser.getDeptId() != user.getDeptId()){
-      deptUser.setDeptId(user.getDeptId());
-      deptUserService.deptUserSave(deptUser);
-    }
-    
-    List<UserVo> userList = userService.getUserVoList();
-    return ResponseResult.success(userList);
   }
 }
 

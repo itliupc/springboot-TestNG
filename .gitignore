@@ -170,3 +170,7 @@ test-output/
 node_modules/
 
 web/npm-debug.log
+
+logs/
+
+download/

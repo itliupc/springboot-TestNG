@@ -2,11 +2,13 @@ package com.wafer.wtp.util;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.io.Resource;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,11 +32,11 @@ public abstract class FileReader {
    * @param classes
    * @return
    */
-  protected Object[] convertParam(String[] cellStrings, List<Class<?>> classes) {
+  protected static Object[] convertParam(Object[] cellStrings, List<Class<?>> classes) {
     Object[] result = new Object[cellStrings.length];
     ObjectMapper objectMapper = new ObjectMapper();
     for (int i = 0; i < cellStrings.length; i++) {
-      String cellString = cellStrings[i];
+      String cellString = String.valueOf(cellStrings[i]);
       Class<?> classType = classes.get(i);
       if (null == cellString || cellString.isEmpty()) {
         result[i] = null;
@@ -122,6 +124,31 @@ public abstract class FileReader {
     Object[][] returnArray = new Object[results.size()][];
     for (int i = 0; i < returnArray.length; i++) {
       returnArray[i] = results.get(i);
+    }
+    return returnArray;
+  }
+  
+  /**
+   * 读取Restful数据
+   * 
+   * @param restTemplate
+   * @param path
+   * @return
+   */
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public static Object[][] readRestDataObject(Method method, RestTemplate restTemplate,
+      String path) {
+    List<Class<?>> paramTypes = new ArrayList<Class<?>>();
+    for (Parameter parameter : method.getParameters()) {
+      paramTypes.add(parameter.getType());
+    }
+    List result = restTemplate.getForObject(path, List.class);
+
+    Object[][] returnArray = new Object[result.size()][];
+    for (int i = 0; i < returnArray.length; i++) {
+      List<Object> caseData = (List<Object>) result.get(i);
+      Object[] arr = caseData.toArray();
+      returnArray[i] = convertParam(arr, paramTypes);
     }
     return returnArray;
   }

@@ -9,10 +9,6 @@ import DeptEditor from "../components/DeptEditor";
 const DeptListPage = ({dispatch, depts, intl, loading, deptInfo, handleType, modalKey, visible}) => {
   const columns = [
     {
-      title: intl.formatMessage({id: "dept.deptId"}),
-      dataIndex: 'deptId'
-    },
-    {
       title: intl.formatMessage({id: "dept.deptName"}),
       dataIndex: 'deptName'
     },
@@ -35,7 +31,7 @@ const DeptListPage = ({dispatch, depts, intl, loading, deptInfo, handleType, mod
             }
           }><Icon type="edit"/></Button>
           <Popconfirm
-            title="Are you sure you want to delete this dept？"
+            title={intl.formatMessage({id: "dept.confirm.deleteDept"})}
             onConfirm={
               () => {
                 dispatch({type: "depts/delete", payload: record.deptId});
@@ -86,7 +82,8 @@ const DeptListPage = ({dispatch, depts, intl, loading, deptInfo, handleType, mod
              visible={visible}
              footer={null}
              key={modalKey}
-             onCancel={closeHandle}>
+             onCancel={closeHandle}
+             maskClosable = {false}>
         <DeptForm/>
       </Modal>
     </div>

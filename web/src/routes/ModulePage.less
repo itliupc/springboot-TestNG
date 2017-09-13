@@ -1,10 +1,12 @@
 .ModuleCollapseLeft{
-  width: 30%;
+  width: 26%;
   border-right: 2px solid;
   padding-right: 15px;
+  overflow: auto;
 }
 .ModuleCollapseRight{
-  width: 68%;
+  width: 70%;
+  overflow: auto;
 }
 
 .moduleContainer{
@@ -16,7 +18,7 @@
 .addModuleBtn{
   width: 100%;
   margin-top: 5px;
-  background: #e0bb48;
+  background: #108ee9;
   color: #fff;
 
   &:hover{
@@ -31,3 +33,53 @@
   border-radius: 15px;
   padding: 5px 10px;
 }
+
+
+.addModuleForm{
+
+  .moduleName{
+
+    margin: 20px;
+    input{
+      width: 60%;
+    }
+  }
+
+  .project{
+
+    margin: 20px;
+    .andSelect{
+      width: 60%;
+    }
+  }
+
+  .running{
+
+    margin: 20px;
+  }
+}
+
+.popBtnSpan{
+  display: flex;
+  flex-direction: column;
+
+  button{
+    margin-top: 10px;
+    //background: #108ee9;
+    border: 0;
+
+    &:hover{
+      background: green;
+      color: #fff;
+
+      span{
+        border-bottom: 0;
+      }
+    }
+
+    span{
+      border-bottom: 2px solid;
+    }
+  }
+}
+

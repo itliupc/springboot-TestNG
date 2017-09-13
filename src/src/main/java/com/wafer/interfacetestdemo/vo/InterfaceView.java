@@ -2,8 +2,10 @@ package com.wafer.interfacetestdemo.vo;
 
 import java.util.List;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.domain.Interface;
+import com.wafer.interfacetestdemo.domain.RequestParam;
+import com.wafer.interfacetestdemo.domain.ResponseParam;
 import com.wafer.interfacetestdemo.utils.DateUtils;
 
 public class InterfaceView {
@@ -18,6 +20,12 @@ public class InterfaceView {
   private boolean isRun;
   private String createTime;
   private String updateTime;
+  
+  private List<RequestParam> requestParams;
+  
+  private List<ResponseParam> responseParams;
+  
+  private List<TestCaseView> testCaseViews;
   
   private List<TestCaseView> testCases;
 
@@ -100,6 +108,38 @@ public class InterfaceView {
   public void setUpdateTime(String updateTime) {
     this.updateTime = updateTime;
   }
+  
+  public List<RequestParam> getRequestParams() {
+	return requestParams;
+  }
+
+  public void setRequestParams(List<RequestParam> requestParams) {
+	this.requestParams = requestParams;
+  }
+  
+  public List<ResponseParam> getResponseParams() {
+	return responseParams;
+  }
+
+  public void setResponseParams(List<ResponseParam> responseParams) {
+	this.responseParams = responseParams;
+  }
+
+  public List<TestCaseView> getTestCases() {
+    return testCases;
+  }
+
+  public void setTestCases(List<TestCaseView> testCases) {
+    this.testCases = testCases;
+  }
+
+  public List<TestCaseView> getTestCaseViews() {
+    return testCaseViews;
+  }
+
+  public void setTestCaseViews(List<TestCaseView> testCaseViews) {
+    this.testCaseViews = testCaseViews;
+  }
 
   public static InterfaceView transformInterfaceToView(Interface face) {
     if (null == face) {
@@ -113,17 +153,9 @@ public class InterfaceView {
     faceView.setModuleId(face.getModuleId());
     faceView.setRequestParam(face.getRequestParam());
     faceView.setResponseResult(face.getResponseResult());
-    faceView.setRun(Constants.RUNNING == face.getIsRun());
+    faceView.setRun(Constant.RUNNING == face.getIsRun());
     faceView.setUpdateTime(DateUtils.formatDateTime(face.getUpdateTime()));
     faceView.setCreateTime(DateUtils.formatDateTime(face.getCreateTime()));
     return faceView;
-  }
-
-  public List<TestCaseView> getTestCases() {
-    return testCases;
-  }
-
-  public void setTestCases(List<TestCaseView> testCases) {
-    this.testCases = testCases;
   }
 }

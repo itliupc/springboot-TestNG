@@ -9,6 +9,8 @@ public interface InterfaceTestCaseRepository extends BaseRepository<InterfaceTes
   
   public List<InterfaceTestCase> findByInterfaceId(long faceId);
   
+  public List<InterfaceTestCase> findByInterfaceIdOrderByInterfaceTestCaseIdDesc(long faceId);
+  
   public List<InterfaceTestCase> findByInterfaceIdAndIsRun(long faceId, int isRun);
   
 }

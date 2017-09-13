@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.vo.ModuleView;
 
 @Entity
@@ -100,7 +100,7 @@ public class Module {
     module.setModuleId(mv.getModuleId());
     module.setModuleName(mv.getModuleName());
     module.setProjectId(mv.getProjectId());
-    module.setIsRun(mv.isRun() ? Constants.RUNNING : Constants.NOT_RUNNING);
+    module.setIsRun(mv.isRun() ? Constant.RUNNING : Constant.NOT_RUNNING);
     return module;
   }
 }

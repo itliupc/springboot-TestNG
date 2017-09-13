@@ -16,7 +16,6 @@ const formLayout = {
 export default injectIntl(({form, intl, type, dispatch, userInfo={}, deptList = []}) => {
   const {getFieldDecorator, validateFields} = form;
   const {userName, email, deptId} = userInfo;
-           debugger
   let pwItem;
   if(type === "add"){
     // 如果是新增User才能输入密码
@@ -51,7 +50,7 @@ export default injectIntl(({form, intl, type, dispatch, userInfo={}, deptList = 
         }
         dispatch({type: 'reload'});
       } else {
-        message.warn(JSON.stringify(err));
+        // message.warn(JSON.stringify(err));
       }
     });
   };

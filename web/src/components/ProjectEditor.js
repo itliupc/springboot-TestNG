@@ -28,7 +28,7 @@ export default injectIntl(({form, intl, type, dispatch, projectInfo={}}) => {
         }
         dispatch({type: 'reload'});
       } else {
-        message.warn(JSON.stringify(err));
+        // message.warn(JSON.stringify(err));
       }
     });
   };

@@ -79,17 +79,17 @@ function RouterConfig({ history, app}) {
                             }
                         ]
                     },
-                    {
-                        path: 'interface',
-                        childRoutes: [
-                            {
-                                path: 'list',
-                                getComponent(nextState, cb) {
-                                    requireRoute(cb, 'InterfaceListPage');
-                                }
-                            }
-                        ]
-                    }
+                    // {
+                    //     path: 'interface',
+                    //     childRoutes: [
+                    //         {
+                    //             path: 'info',
+                    //             getComponent(nextState, cb) {
+                    //                 requireRoute(cb, 'InterfaceInfoPage');
+                    //             }
+                    //         }
+                    //     ]
+                    // }
                 ]
               }
             ]

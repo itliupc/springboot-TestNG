@@ -2,6 +2,7 @@
  * Created by admin on 2017/7/26.
  */
 import request from '../utils/request';
+import downloadRequest from '../utils/downloadRequest';
 import * as constants from '../utils/constants';
 
 const JSON = window.JSON;
@@ -37,4 +38,11 @@ export function deleteProject({userId, projectId}) {
     method: 'DELETE'
   });
 }
+
+export function downloadProjectTestCase({projectId, fileType}) {
+  downloadRequest(`api/v1/dataexport/${fileType}/project/${projectId}`, {
+    method: 'GET'
+  });
+}
+
 

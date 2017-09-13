@@ -2,7 +2,7 @@ package com.wafer.interfacetestdemo.vo;
 
 import java.util.List;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.domain.Module;
 import com.wafer.interfacetestdemo.utils.DateUtils;
 
@@ -84,7 +84,7 @@ public class ModuleView {
     mv.setModuleId(mo.getModuleId());
     mv.setModuleName(mo.getModuleName());
     mv.setProjectId(mo.getProjectId());
-    mv.setRun(Constants.RUNNING == mo.getIsRun() ? true : false);
+    mv.setRun(Constant.RUNNING == mo.getIsRun() ? true : false);
     mv.setCreateTime(DateUtils.formatDateTime(mo.getCreateTime()));
     mv.setUpdateTime(DateUtils.formatDateTime(mo.getUpdateTime()));
     return mv;

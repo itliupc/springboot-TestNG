@@ -44,16 +44,24 @@ export default {
       yield put({ type: 'changeShow' , payload: payload, deptInfo: deptInfo});
     },
     *add({payload: deptInfo}, {select, put, call}){
-      yield call(deptService.addDept, deptInfo);
-      yield put({type: "reload"});
+      const {result, message: msgkey} = yield call(deptService.addDept, deptInfo);
       const messages  = yield select(state => state.i18n.messages);
-      message.info(messages["dept.success.addDept"]);
+      if(result){
+        yield put({type: "reload"});
+        message.info(messages["dept.success.addDept"]);
+      } else{
+        message.error(messages[`msgKey.${msgkey}`]);
+      }
     },
     *edit({payload: deptInfo}, {select, put, call}){
-      yield call(deptService.editDept, deptInfo);
-      yield put({type: "reload"});
+      const {result, message: msgkey} = yield call(deptService.editDept, deptInfo);
       const messages  = yield select(state => state.i18n.messages);
-      message.info(messages["dept.success.editDept"]);
+      if(result) {
+        yield put({type: "reload"});
+        message.info(messages["dept.success.editDept"]);
+      }else{
+        message.error(messages[`msgKey.${msgkey}`]);
+      }
     },
     *delete({payload: deptId}, {select, put, call}){
       const {result, message: msgKey} = yield call(deptService.removeDept, deptId);

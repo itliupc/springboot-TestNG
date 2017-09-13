@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.vo.InterfaceView;
 
 @Entity
@@ -124,7 +124,7 @@ public class Interface {
     face.setModuleId(faceView.getModuleId());
     face.setRequestParam(faceView.getRequestParam());
     face.setResponseResult(faceView.getResponseResult());
-    face.setIsRun(faceView.isRun() ? Constants.RUNNING : Constants.NOT_RUNNING);
+    face.setIsRun(faceView.isRun() ? Constant.RUNNING : Constant.NOT_RUNNING);
     return face;
   }
 

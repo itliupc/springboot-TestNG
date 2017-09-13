@@ -1,12 +1,12 @@
 package com.wafer.wtp.base;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -24,21 +25,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wafer.wtp.util.FileReader;
 
 public class AbstractTestNGTest extends AbstractTransactionalTestNGSpringContextTests {
+  
+  public static final String DP_DATA_TYPE = "rest";// rest,json,excel
+  
+  public static final String DP_REST_PATH = "http://localhost:8000/api/v1/dss/1";
 
   public static final String DP_API_DATA = "api_data";
 
   public static final String DP_WORKBOOK = "workbook";
 
   public static final String DP_JSON = "json";
+  
+  public static final String DP_REST = "rest";
 
   public static final String INIT_DATA = "init";
 
   public static final String INIT_FILE_PATH = "filePath";
 
-  public static final String ALREADY_INIT = "alreadyINit";
+  public static final String ALREADY_INIT = "alreadyInit";
 
   @Autowired
   private WebApplicationContext context;
+  
+  @Autowired
+  private RestTemplateBuilder restTemplateBuilder;
 
   private MockMvc mockMvc;
 
@@ -144,6 +154,23 @@ public class AbstractTestNGTest extends AbstractTransactionalTestNGSpringContext
     return FileReader.readDataObject(resource, targetMethod, null);
 
   }
+  
+  /**
+   * 提供rest数据
+   * 
+   * @param targetMethod
+   * @return
+   * @throws IOException
+   */
+  @DataProvider(name = DP_REST)
+  public Object[][] getRestDataContent(Method targetMethod) throws IOException {
+    StringBuffer requestPath = new StringBuffer(DP_REST_PATH);
+    requestPath.append("/").append(this.getClass().getSimpleName());
+    requestPath.append("/").append(targetMethod.getName());
+    RestTemplate restTemplate = restTemplateBuilder.build();
+    return FileReader.readRestDataObject(targetMethod, restTemplate, requestPath.toString());
+
+  }
 
   /**
    * 提供数据
@@ -154,26 +181,25 @@ public class AbstractTestNGTest extends AbstractTransactionalTestNGSpringContext
    */
   @DataProvider(name = DP_API_DATA)
   public Object[][] getAPICommonData(Method targetMethod) throws IOException {
-    StringBuffer xlsBuffer = new StringBuffer("classpath*:");
-    xlsBuffer.append(this.getClass().getSimpleName());
-    xlsBuffer.append("*.xls");
-
-    StringBuffer jsonBuffer = new StringBuffer("classpath*:");
-    jsonBuffer.append(this.getClass().getSimpleName());
-    jsonBuffer.append("*.json");
-
-    PathMatchingResourcePatternResolver loader = new PathMatchingResourcePatternResolver();
-
-    Resource[] resources = loader.getResources(xlsBuffer.toString());
-
-    if (null == resources || resources.length == 0) {
-      resources = loader.getResources(jsonBuffer.toString());
+    if("REST".equalsIgnoreCase(DP_DATA_TYPE)){
+      RestTemplate restTemplate = restTemplateBuilder.build();
+      return FileReader.readRestDataObject(targetMethod, restTemplate, DP_REST_PATH);
+    }else if("JSON".equalsIgnoreCase(DP_DATA_TYPE)){
+      StringBuffer jsonBuffer = new StringBuffer("classpath*:");
+      jsonBuffer.append(this.getClass().getSimpleName());
+      jsonBuffer.append("*.json");
+      PathMatchingResourcePatternResolver loader = new PathMatchingResourcePatternResolver();
+      Resource[] resources = loader.getResources(jsonBuffer.toString());
+      return FileReader.readAllDataObject(resources, targetMethod, null);
+    }else if("EXCEL".equalsIgnoreCase(DP_DATA_TYPE)){
+      StringBuffer xlsBuffer = new StringBuffer("classpath*:");
+      xlsBuffer.append(this.getClass().getSimpleName());
+      xlsBuffer.append("*.xls");
+      PathMatchingResourcePatternResolver loader = new PathMatchingResourcePatternResolver();
+      Resource[] resources = loader.getResources(xlsBuffer.toString());
+      return FileReader.readAllDataObject(resources, targetMethod, null);
+    }else{
+      return new Object[0][];
     }
-
-    if (null == resources || resources.length == 0) {
-      throw new FileNotFoundException();
-    }
-
-    return FileReader.readAllDataObject(resources, targetMethod, null);
   }
 }

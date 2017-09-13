@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,7 +37,10 @@ public class IOUtils {
       response.reset();
       
       response.addHeader("Content-Length", "" + file.length());
-      response.addHeader("Content-Type", "application/json;charset=utf-8");
+//      response.addHeader("Content-Type", "application/json;charset=utf-8");
+      response.setContentType("application/force-download");
+      response.addHeader("Content-disposition",
+          "attachment;filename=" + URLEncoder.encode(file.getName(), "utf-8"));
       
       os = new BufferedOutputStream(response.getOutputStream());
       os.write(buffer);

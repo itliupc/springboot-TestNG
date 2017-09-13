@@ -1,5 +1,6 @@
 package com.wafer.interfacetestdemo.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,5 +34,22 @@ public class DateUtils {
     return sf.format(dateTime);
   }
   
-  
+  /**
+   * 将String 格式转成Date类型
+   * @param dateTime
+   * @param format 格式类型
+   * @return
+   */
+  public static Date formatToDate(String dateString, String format){
+    if(null == dateString){
+      return null;
+    }
+    SimpleDateFormat sf = new SimpleDateFormat(format);
+    try {
+      return sf.parse(dateString);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 }

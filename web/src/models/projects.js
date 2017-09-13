@@ -63,6 +63,9 @@ export default {
       yield put({type: "reload"});
       const messages  = yield select(state => state.i18n.messages);
       message.info(messages["project.success.deleteProject"]);
+    },
+    *download({projectId:projectId, fileType:fileType},{call}){
+      yield call(projectService.downloadProjectTestCase, {projectId, fileType});
     }
   },
   subscriptions: {

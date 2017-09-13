@@ -1,2 +1,1 @@
-# springboot-TestNG
-springboot集成TestNG
+# 接口测试Demo项目

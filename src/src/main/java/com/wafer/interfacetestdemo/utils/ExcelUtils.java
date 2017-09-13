@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,15 +24,23 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wafer.interfacetestdemo.vo.TestCaseView;
-
 public class ExcelUtils {
 
   static final Logger logger = LoggerFactory.getLogger(ExcelUtils.class);
 
   private static final String DEFAULT_EXPORT_SHEET_NAME = "InterfaceTestCase.xls";
 
-  private static final String DEFAULT_EXPORT_FILE_NAME = "ExportTestCase.xls";
+  private static final String DEFAULT_EXPORT_FILE_NAME = "TestAPI.xls";
+  
+  public static final String DOWNLOAD_FILE_PATH = "../download/";
+  
+  public static String COLUMN_NAME_01 = "caseName";
+  public static String COLUMN_NAME_02 = "url";
+  public static String COLUMN_NAME_03 = "type";
+  public static String COLUMN_NAME_04 = "paramters";
+  public static String COLUMN_NAME_05 = "expectResult";
+  public static String COLUMN_NAME_06 = "expectStatus";
+  public static String COLUMN_NAME_07 = "isSkip";
 
   public static List<List<Map<String, String>>> parseExcel(InputStream is, String fileName)
       throws IOException {
@@ -77,19 +84,20 @@ public class ExcelUtils {
 
   /**
    * 导出TestCase 到Excel
+   * @param face 
    * @param testCaseViews 
    * 
    * @return
    */
-  public static String createExcel(List<TestCaseView> testCaseViews) {
+  public static String createExcel(List<HashMap<String, String>> data) {
 
     Workbook work = new HSSFWorkbook();
     Sheet sheet = work.createSheet(DEFAULT_EXPORT_SHEET_NAME);
-    sheet.setDefaultColumnWidth(20 * 256);
+    sheet.setDefaultColumnWidth(16);
     // 创建表头信息
     createTitle(work, sheet);
     // 创建excel的内容信息
-    createExcelContent(sheet);
+    createExcelContent(sheet, data);
     // 获取文件的路径
     String filePath = getFilePath();
     logger.debug("Export Excel and filePath = {}.", filePath);
@@ -99,7 +107,7 @@ public class ExcelUtils {
     }
     return filePath;
   }
-
+  
   private static String getCellValue(Cell cell) {
     String cellValue = "";
     if (null == cell) {
@@ -157,55 +165,61 @@ public class ExcelUtils {
     Row titleRow = sheet.createRow(0);
     Cell cell = null;
     cell = titleRow.createCell(0);
-    cell.setCellValue("序号");
+    cell.setCellValue(COLUMN_NAME_01);
     cell.setCellStyle(style);
 
     cell = titleRow.createCell(1);
-    cell.setCellValue("接口名称");
+    cell.setCellValue(COLUMN_NAME_02);
     cell.setCellStyle(style);
 
     cell = titleRow.createCell(2);
-    cell.setCellValue("接口类型");
+    cell.setCellValue(COLUMN_NAME_03);
     cell.setCellStyle(style);
 
     cell = titleRow.createCell(3);
-    cell.setCellValue("接口地址");
+    cell.setCellValue(COLUMN_NAME_04);
     cell.setCellStyle(style);
 
     cell = titleRow.createCell(4);
-    cell.setCellValue("接口参数");
+    cell.setCellValue(COLUMN_NAME_05);
     cell.setCellStyle(style);
 
     cell = titleRow.createCell(5);
-    cell.setCellValue("期望结果");
+    cell.setCellValue(COLUMN_NAME_06);
     cell.setCellStyle(style);
 
     cell = titleRow.createCell(6);
-    cell.setCellValue("请求状态码");
+    cell.setCellValue(COLUMN_NAME_07);
     cell.setCellStyle(style);
 
-    cell = titleRow.createCell(7);
+    /*cell = titleRow.createCell(7);
     cell.setCellValue("是否运行");
-    cell.setCellStyle(style);
+    cell.setCellStyle(style);*/
   }
 
-  public static void createExcelContent(Sheet sheet) {
-    Row row = sheet.createRow(1);
+  public static void createExcelContent(Sheet sheet, List<HashMap<String, String>> data) {
+    int i = 1;
+    for(HashMap<String, String> entry : data){
+      Row row = sheet.createRow(i);
 
-    row.createCell(0).setCellValue("1");
-    row.createCell(1).setCellValue("");
-    row.createCell(2).setCellValue("");
-    row.createCell(3).setCellValue("");
-    row.createCell(4).setCellValue("");
-    row.createCell(5).setCellValue("");
-    row.createCell(6).setCellValue("");
-    row.createCell(7).setCellValue("");
+      row.createCell(0).setCellValue(entry.get(COLUMN_NAME_01));
+      row.createCell(1).setCellValue(entry.get(COLUMN_NAME_02));
+      row.createCell(2).setCellValue(entry.get(COLUMN_NAME_03));
+      row.createCell(3).setCellValue(entry.get(COLUMN_NAME_04));
+      row.createCell(4).setCellValue(entry.get(COLUMN_NAME_05));
+      row.createCell(5).setCellValue(entry.get(COLUMN_NAME_06));
+      row.createCell(6).setCellValue(entry.get(COLUMN_NAME_07));
+      
+      i++;
+    }
   }
 
 
   public static boolean writeData(Workbook work, String filePath) {
+    FileOutputStream fileOut = null;
     try {
-      work.write(new FileOutputStream(filePath));
+      fileOut = new FileOutputStream(filePath);
+      work.write(fileOut);
     } catch (FileNotFoundException e) {
       logger.error(e.getMessage(), e);
       return false;
@@ -218,19 +232,22 @@ public class ExcelUtils {
       } catch (IOException e) {
         logger.error(e.getMessage(), e);
       }
+      try {
+        fileOut.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     return true;
   }
-
-
+  
   public static String getFilePath(String... name) {
     String fileName = DEFAULT_EXPORT_FILE_NAME;
     if (null != name && name.length > 0) {
       fileName = name[0];
     }
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-    String dateTime = dateFormat.format(new Date());
-    String path = "/download/" + dateTime + "/" + UUID.randomUUID().toString().replaceAll("-", "") + "/";
+    String dateTime = DateUtils.formatDateTime(new Date(), "yyyyMMdd");
+    String path = DOWNLOAD_FILE_PATH + dateTime + "/" + UUID.randomUUID().toString().replaceAll("-", "") + "/";
     File file = new File(path);
     if (!file.exists()) {
       file.mkdirs();

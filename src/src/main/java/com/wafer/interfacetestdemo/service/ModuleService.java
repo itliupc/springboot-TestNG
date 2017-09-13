@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.domain.Module;
 import com.wafer.interfacetestdemo.repository.ModuleRepository;
 
@@ -91,7 +91,7 @@ public class ModuleService {
    * @return
    */
   public List<Module> findModuleByProjectIdAndRun(long projectId, boolean isRun) {
-    int running = isRun ? Constants.RUNNING : Constants.NOT_RUNNING;
+    int running = isRun ? Constant.RUNNING : Constant.NOT_RUNNING;
     return moduleRepository.findModuleByProjectIdAndIsRun(projectId, running);
   }
 
@@ -103,7 +103,7 @@ public class ModuleService {
    */
   public List<Module> findModuleByProjectIdAndRun2(long projectId, boolean isRun) {
     List<Module> modules = moduleRepository.findByProjectId(projectId);
-    int running = isRun ? Constants.RUNNING : Constants.NOT_RUNNING;
+    int running = isRun ? Constant.RUNNING : Constant.NOT_RUNNING;
     return modules.parallelStream().filter((mo) -> mo.getIsRun() == running)
         .collect(Collectors.toList());
   }

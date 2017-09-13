@@ -1,4 +1,5 @@
 CREATE DATABASE interfacetestdemo;
+use interfacetestdemo;
 
 CREATE TABLE `ps_user` (
   `user_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -69,7 +70,7 @@ CREATE TABLE `ps_interface` (
   `interface_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `module_id` INT(11) NOT NULL COMMENT '模块id',
   `interface_name` VARCHAR(255) NOT NULL COMMENT '接口名',
-  `request_url` VARCHAR(255) NOT NULL COMMENT '接口url',
+  `interface_url` VARCHAR(255) NOT NULL COMMENT '接口url',
   `interface_type` VARCHAR(64) NOT NULL COMMENT '接口类型',
   `request_param` TEXT COMMENT '接口参数',
   `response_result` TEXT COMMENT '接口返回结果',
@@ -86,6 +87,7 @@ DROP TABLE IF EXISTS `ps_interface_testcase`;
 CREATE TABLE `ps_interface_testcase` (
   `interface_testcase_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `interface_id` INT(11) NOT NULL COMMENT '接口id',
+  `test_case_name` varchar(255) COMMENT '测试用例名称',
   `param_case` TEXT COMMENT '接口入参',
   `expect_result` TEXT COMMENT '期望结果',
   `expect_status` INT(11) NOT NULL COMMENT '期望状态',
@@ -97,7 +99,31 @@ CREATE TABLE `ps_interface_testcase` (
   CONSTRAINT `fk_interface_id` FOREIGN KEY (`interface_id`) REFERENCES `ps_interface` (`interface_id`) ON DELETE CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
---- admin/admin
+CREATE TABLE `ps_request_param`(  
+  `request_param_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `request_param_name` VARCHAR(125) NOT NULL COMMENT '参数名',
+  `request_param_type` VARCHAR(64) NOT NULL COMMENT '参数类型',
+  `request_param_description` VARCHAR(256) NOT NULL COMMENT '请求描述',
+  `interface_id` INT(11) NOT NULL COMMENT '接口Id',
+  `create_time` DATETIME NOT NULL COMMENT '创建时间',
+  `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`request_param_id`),
+  CONSTRAINT `fk_requestparam_iid` FOREIGN KEY (`interface_id`) REFERENCES `interfacetestdemo`.`ps_interface`(`interface_id`) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `ps_response_param`(  
+  `response_param_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `response_param_name` VARCHAR(125) NOT NULL COMMENT '响应参数名',
+  `response_param_type` VARCHAR(64) NOT NULL COMMENT '响应类型',
+  `response_param_description` VARCHAR(256) NOT NULL COMMENT '响应描述',
+  `interface_id` INT(11) NOT NULL COMMENT '接口Id',
+  `create_time` DATETIME NOT NULL COMMENT '创建时间',
+  `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`response_param_id`),
+  CONSTRAINT `fk_responseparam_iid` FOREIGN KEY (`interface_id`) REFERENCES `interfacetestdemo`.`ps_interface`(`interface_id`) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- admin/admin
 INSERT INTO `ps_user` (`user_id`, `user_name`, `password`, `email`, `status`, `user_authority`, `latest_login_time`, `create_time`, `update_time`) VALUES('1','admin','$2a$10$P7pwwuhkAHPH/omhVd46GuYATgaX7CExUrf0HRrRaf42CU.F22WGq','admin','0','0','2017-08-23 09:04:00','2017-08-18 09:32:24','2017-08-22 16:55:08');
 INSERT INTO `ps_dept` (`dept_id`, `dept_name`, `dept_code`, `dept_type`, `create_time`, `update_time`) VALUES('1','全部项目','QBXM',1,'2017-08-22 14:28:04','2017-08-22 14:28:04');
 INSERT INTO `ps_dept_user` (`dept_user_id`, `dept_id`, `user_id`, `create_time`, `update_time`) VALUES('1','1','1','2017-08-22 15:44:21','2017-08-22 15:44:25');

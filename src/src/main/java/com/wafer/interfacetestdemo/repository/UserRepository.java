@@ -27,4 +27,7 @@ public interface UserRepository extends BaseRepository<User, Long> {
 
   @Query(value = "from User u where u.email = :email and userId != :userId")
   User getOtherUserbyEmail(@Param("email") String email, @Param("userId") long userId);
+  
+  @Query(value = "from User u where u.userName = :userName and userId != :userId")
+  User getOtherUserbyUserName(@Param("userName") String userName, @Param("userId") long userId);
 }

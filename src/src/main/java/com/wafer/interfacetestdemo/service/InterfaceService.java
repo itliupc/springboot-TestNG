@@ -61,6 +61,16 @@ public class InterfaceService {
   public List<Interface> findInterfaceByModule(long moduleId) {
     return interfaceRepository.findByModuleId(moduleId);
   }
+  
+  /**
+   * 获取一个module下的所有【接口】 排序
+   * 
+   * @param moduleId
+   * @return
+   */
+  public List<Interface> findInterfaceByModuleOrderBy(long moduleId) {
+    return interfaceRepository.findByModuleIdOrderByInterfaceIdDesc(moduleId);
+  }
 
   /**
    * 获取多个module下的所有【接口】

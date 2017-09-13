@@ -31,7 +31,7 @@ export default injectIntl(({form, intl, deptInfo = {}, type, dispatch}) => {
         }
         dispatch({type: 'reload'});
       } else {
-        message.warn(JSON.stringify(err));
+        // message.warn(JSON.stringify(err));
       }
     });
   };

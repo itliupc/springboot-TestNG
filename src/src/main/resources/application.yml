@@ -26,4 +26,14 @@ token :
   head : Bearer
   expiration : 604800 
   secret : cms@wafer.com
-        
+ 
+logging : 
+  level : 
+    com : 
+      wafer : DEBUG 
+    org :
+      hibernate : ERROR
+      springframework : 
+       web : ERROR
+    root : WARN 
+  file : ../logs/interfacetest.log 

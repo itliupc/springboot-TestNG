@@ -23,7 +23,9 @@ const LoginPage = ({form, dispatch, intl}) => {
                         <Form onSubmit={(e)=>{
                             e.preventDefault();
                             validateFields((err, values)=>{
-                                dispatch({type:'common/login', payload:values});
+                              if (!err) {
+                                dispatch({type: 'common/login', payload: values});
+                              }
                             });
                         }}>
                         <FormItem

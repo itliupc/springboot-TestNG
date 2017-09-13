@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.vo.TestCaseView;
 
 @Entity
@@ -22,6 +22,7 @@ public class InterfaceTestCase {
   @GenericGenerator(name = "generator", strategy = "native")
   @Column(name = "interface_testcase_id", unique = true, nullable = false)
   private long interfaceTestCaseId;
+  private String testCaseName;
   private long interfaceId;
   private String paramCase;
   private String expectResult;
@@ -36,6 +37,14 @@ public class InterfaceTestCase {
 
   public void setInterfaceTestCaseId(long interfaceTestCaseId) {
     this.interfaceTestCaseId = interfaceTestCaseId;
+  }
+
+  public String getTestCaseName() {
+    return testCaseName;
+  }
+
+  public void setTestCaseName(String testCaseName) {
+    this.testCaseName = testCaseName;
   }
 
   public long getInterfaceId() {
@@ -103,8 +112,9 @@ public class InterfaceTestCase {
     testCase.setExpectStatus(testCaseView.getExpectStatus());
     testCase.setInterfaceId(testCaseView.getInterfaceId());
     testCase.setInterfaceTestCaseId(testCaseView.getInterfaceTestCaseId());
+    testCase.setTestCaseName(testCaseView.getTestCaseName());
     testCase.setParamCase(testCaseView.getParamCase());
-    testCase.setIsRun(testCaseView.isRun() ? Constants.RUNNING : Constants.NOT_RUNNING);
+    testCase.setIsRun(testCaseView.isRun() ? Constant.RUNNING : Constant.NOT_RUNNING);
     return testCase;
   }
 }

@@ -1,12 +1,13 @@
 package com.wafer.interfacetestdemo.vo;
 
-import com.wafer.interfacetestdemo.config.Constants;
+import com.wafer.interfacetestdemo.config.Constant;
 import com.wafer.interfacetestdemo.domain.InterfaceTestCase;
 import com.wafer.interfacetestdemo.utils.DateUtils;
 
 public class TestCaseView {
 
   private long interfaceTestCaseId;
+  private String testCaseName;
   private long interfaceId;
   private String paramCase;
   private String expectResult;
@@ -21,6 +22,14 @@ public class TestCaseView {
 
   public void setInterfaceTestCaseId(long interfaceTestCaseId) {
     this.interfaceTestCaseId = interfaceTestCaseId;
+  }
+
+  public String getTestCaseName() {
+    return testCaseName;
+  }
+
+  public void setTestCaseName(String testCaseName) {
+    this.testCaseName = testCaseName;
   }
 
   public long getInterfaceId() {
@@ -88,8 +97,9 @@ public class TestCaseView {
     tcv.setExpectStatus(testCase.getExpectStatus());
     tcv.setInterfaceId(testCase.getInterfaceId());
     tcv.setInterfaceTestCaseId(testCase.getInterfaceTestCaseId());
+    tcv.setTestCaseName(testCase.getTestCaseName());
     tcv.setParamCase(testCase.getParamCase());
-    tcv.setRun(Constants.RUNNING == testCase.getIsRun() ? true : false);
+    tcv.setRun(Constant.RUNNING == testCase.getIsRun() ? true : false);
     tcv.setCreateTime(DateUtils.formatDateTime(testCase.getCreateTime()));
     tcv.setUpdateTime(DateUtils.formatDateTime(testCase.getUpdateTime()));
     return tcv;

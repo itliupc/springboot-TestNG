@@ -9,13 +9,20 @@ export default {
     interfaceIds:[],
     currentInterfaceId:"0",
     flag: false,
+    addModuleModalVisible: false,
+    modalKey:'',
+    projectId:'',
+    currentModule: {},
+    activeKey : '',
+    displayInterfaceCreateDia: false,
+    refreshModule:false,
   },
   reducers: {
-    update(state, {modules}) {
-      debugger;
+    update(state, {modules,projectId:projectId}) {
       state.modules = modules;
       state.moduleIds = [];
       state.interfaceIds = [];
+      state.projectId = projectId;
       let newState = state;
       return newState;
     },
@@ -32,7 +39,6 @@ export default {
     updateInterfaces(state, {payload : newInterfaces, moduleId : moduleId}){
       // 1.循环遍历module ,将新获取到的interface更新
       let modules = state.modules;
-      debugger
       modules.map(module =>{
         if(module.moduleId == moduleId){
           module.interfaceViews = newInterfaces;
@@ -43,6 +49,103 @@ export default {
       return state;
     },
 
+    changeShow(state){
+      state.addModuleModalVisible = !state.addModuleModalVisible;
+      state.modalKey = Math.random();
+      state.currentModule = {};
+      return state;
+    },
+
+    addModule(state, {payload:newModule}){
+      state.modules.push(newModule);
+      state.addModuleModalVisible = !state.addModuleModalVisible;
+      state.modalKey = Math.random();
+      state.currentModule = {};
+      state.flag = !state.flag;
+      return state;
+    },
+
+    editModule(state, {payload:newModule}){
+      state.modules.map(module => {
+        if(module.moduleId == newModule.moduleId){
+          module.moduleName = newModule.moduleName;
+          module.run = newModule.run;
+        }
+      });
+      state.addModuleModalVisible = !state.addModuleModalVisible;
+      state.modalKey = Math.random();
+      state.currentModule = {};
+      state.flag = !state.flag;
+      return state;
+    },
+
+    deleteModule(state, {payload:moduleId}){
+      let newModules = [];
+      state.modules.map(module => {
+        if(module.moduleId != moduleId){
+          newModules.push(module);
+        }
+      });
+      state.modules = newModules;
+      state.flag = !state.flag;
+      return state;
+    },
+
+    deleteInterface(state, {moduleId: moduleId, interfaceId: interfaceId}){
+      state.modules.map(module => {
+        if(module.moduleId == moduleId){
+          let newInterface = [];
+          module.interfaceViews.map(face => {
+            if(face.interfaceId != interfaceId){
+              newInterface.push(face);
+            }
+          });
+
+          module.interfaceViews = newInterface;
+        }
+      });
+      state.flag = !state.flag;
+      return state;
+    },
+
+    updateCurrentModule(state, {payload: moduleId}){
+      state.modules.map(module => {
+        if(module.moduleId == moduleId){
+          state.currentModule = module;
+        }
+      });
+      state.addModuleModalVisible = !state.addModuleModalVisible;
+      state.modalKey = Math.random();
+      return state;
+    },
+
+    updateAcKey(state, {payload: moduleId}){
+      state.activeKey = moduleId;
+      return state;
+    },
+
+    updateTestCase(state, {moduleId:moduleId, interfaceId: interfaceId, testCases: testCase}){
+      state.modules.map(module => {
+        if(module.moduleId == moduleId){
+          module.interfaceViews.map(face =>{
+            if(face.interfaceId == interfaceId){
+              face.testCaseViews = testCase;
+            }
+          });
+        }
+      });
+      state.flag = !state.flag;
+      return state;
+    },
+
+    duplicateInterface(state, {moduleId: moduleId, newInterface:newInterface}){
+      state.modules.map(module => {
+        if(module.moduleId == moduleId){
+          module.interfaceViews.push(newInterface);
+        }
+      });
+      return state;
+    }
   },
   effects: {
     *reload({projectId}, { select, call, put}) {
@@ -51,11 +154,11 @@ export default {
       const modules = result.data;
       yield put({
         type: 'update',
-        modules: modules
+        modules: modules,
+        projectId: projectId
       });
     },
     *interfacelist({payload: mIds}, {select, call, put}){
-      debugger;
       const mods = yield select(state => state.modules);
       const modules = yield select(state => state.modules.modules);
       const moduleIds =  mods.moduleIds;
@@ -104,7 +207,6 @@ export default {
       }
     },
     *testcaselist({payload: iIds}, {select, call, put}){
-      debugger;
       const mods = yield select(state => state.modules);
       const modules = yield select(state => state.modules.modules);
       const moduleIds =  mods.moduleIds;
@@ -167,6 +269,43 @@ export default {
         moduleId: moduleId
       });
     },
+    *show({payload: payload}, {put}){
+      yield put({ type: 'changeShow' , payload: payload});
+    },
+    *add({payload: values}, {call, put}){
+      const result = yield call(moduleService.addModule, values);
+      yield put({ type: 'addModule' , payload: result.data});
+    },
+    *edit({payload: values}, {call, put}){
+      const result = yield call(moduleService.editModule, values);
+      yield put({ type: 'editModule' , payload: result.data});
+    },
+    *deleteMo({payload: moduleId}, {call, put}){
+      yield call(moduleService.deleteModule, moduleId);
+      yield put({ type: 'deleteModule' , payload: moduleId});
+    },
+    *deleteIn({moduleId: moduleId, interfaceId: interfaceId}, {call, put}){
+      yield call(moduleService.deleteInterface, interfaceId);
+      yield put({ type: 'deleteInterface' , moduleId: moduleId, interfaceId: interfaceId});
+    },
+
+    *showCurrentModule({payload: moduleId}, {put}){
+      yield put({ type: 'updateCurrentModule' , payload: moduleId});
+    },
+
+    *updateActiveKey({payload: moduleId}, {put}){
+      yield put({ type: 'updateAcKey' , payload: moduleId});
+    },
+
+    *testCaseList({moduleId : moduleId, interfaceId: interfaceId}, {call, put}){
+      const result = yield call(moduleService.testCaseList, interfaceId);
+      yield put({ type: 'updateTestCase' , moduleId:moduleId, interfaceId: interfaceId, testCases: result.data});
+    },
+
+    *duplicate({moduleId : moduleId, interfaceId: interfaceId}, {call, put}){
+      const result = yield call(moduleService.duplicateInterface, interfaceId);
+      yield put({ type: 'duplicateInterface', moduleId:moduleId, newInterface: result.data});
+    }
   },
   subscriptions: {
     setup({ dispatch, history }) {
